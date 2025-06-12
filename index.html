@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>עורך מפת ישיבה | גרסה משופרת</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                <i data-lucide="layout-grid"></i>
+                <h3>עורך מפת ישיבה</h3>
+            </div>
+
+            <div class="tool-group">
+                <label class="group-label">עיצוב וסידור</label>
+                <div class="input-row">
+                    <!-- כפתור צבע רקע -->
+                    <div class="split-color-btn">
+                        <button id="btn-apply-bg-color" class="main-action" title="החל צבע רקע">
+                            <i data-lucide="paint-bucket"></i>
+                            <span id="bg-color-indicator" class="color-indicator"></span>
+                        </button>
+                        <div id="bg-color-trigger" class="picker-trigger" title="בחר צבע רקע"><i data-lucide="chevron-down"></i></div>
+                        <input type="color" id="bg-color-picker" value="#dadaff">
+                    </div>
+                     <!-- כפתור צבע גופן -->
+                    <div class="split-color-btn">
+                        <button id="btn-apply-font-color" class="main-action" title="החל צבע גופן">
+                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="20px" font-family="Noto Sans Hebrew" font-weight="600">א</text></svg>
+                            <span id="font-color-indicator" class="color-indicator"></span>
+                        </button>
+                        <div id="font-color-trigger" class="picker-trigger" title="בחר צבע גופן"><i data-lucide="chevron-down"></i></div>
+                        <input type="color" id="font-color-picker" value="#1e293b">
+                    </div>
+                    <input type="number" id="input-font-size" class="font-size-input" min="8" placeholder="14" title="גודל גופן">
+                </div>
+                <div class="input-row">
+                    <button id="btn-merge-unmerge" class="icon-btn" title="מזג / פצל"><i data-lucide="combine"></i></button>
+                    <button id="btn-mode-hide" class="icon-btn" title="הסתר/הצג מושב"><i data-lucide="eye"></i></button>
+                    <button id="btn-toggle-writing-mode" class="icon-btn" title="שנה כיוון טקסט"><i data-lucide="arrow-down-up"></i></button>
+                    <div class="size-inputs">
+                        <label for="input-width" title="רוחב">ר:</label>
+                        <input type="number" id="input-width" placeholder="--" min="10" title="רוחב (px)">
+                        <label for="input-height" title="גובה">ג:</label>
+                        <input type="number" id="input-height" placeholder="--" min="10" title="גובה (px)">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tool-group">
+                 <label class="group-label">הוספת אובייקטים</label>
+                 <div class="input-row">
+                     <button id="btn-toggle-object-mode" class="icon-btn" title="מצב עריכת אובייקטים"><i data-lucide="mouse-pointer-2"></i></button>
+                     <button id="btn-add-textbox" class="icon-btn" title="הוסף תיבת טקסט"><i data-lucide="type"></i></button>
+                     <button id="btn-add-line" class="icon-btn" title="הוסף קו"><i data-lucide="minus"></i></button>
+                     <button id="btn-add-image" class="icon-btn" title="הוסף תמונה"><i data-lucide="image-plus"></i></button>
+                     <input type="file" id="image-upload-input" style="display: none;" accept="image/*">
+                 </div>
+            </div>
+
+            <div class="tool-group">
+                <label class="group-label">עריכת רשת</label>
+                 <div class="input-row compact-input-row">
+                     <label for="add-rows-cols-count" class="sub-group-label" title="כמות להוספה">כמות:</label>
+                     <input type="number" id="add-rows-cols-count" value="1" min="1" title="כמות להוספה">
+                     <button id="btn-delete" class="icon-btn icon-btn-danger" title="מחק שורות/טורים מלאים שנבחרו"><i data-lucide="trash-2"></i></button>
+                 </div>
+                <div class="grid-edit-actions">
+                    <label class="sub-group-label">הוסף שורה:</label>
+                    <div class="input-row input-row-wrapping">
+                        <button id="btn-add-row-before" class="icon-btn" title="הוסף מעל הבחירה"><i data-lucide="arrow-up-to-line"></i></button>
+                        <button id="btn-add-row-after" class="icon-btn" title="הוסף מתחת לבחירה"><i data-lucide="arrow-down-to-line"></i></button>
+                        <button id="btn-add-row-start" class="icon-btn" title="הוסף להתחלה"><i data-lucide="chevrons-up"></i></button>
+                        <button id="btn-add-row-end" class="icon-btn" title="הוסף לסוף"><i data-lucide="chevrons-down"></i></button>
+                    </div>
+                     <label class="sub-group-label">הוסף טור:</label>
+                    <div class="input-row input-row-wrapping">
+                        <button id="btn-add-col-before" class="icon-btn" title="הוסף מימין לבחירה"><i data-lucide="arrow-right-to-line"></i></button>
+                        <button id="btn-add-col-after" class="icon-btn" title="הוסף משמאל לבחירה"><i data-lucide="arrow-left-to-line"></i></button>
+                        <button id="btn-add-col-start" class="icon-btn" title="הוסף להתחלה"><i data-lucide="chevrons-right"></i></button>
+                        <button id="btn-add-col-end" class="icon-btn" title="הוסף לסוף"><i data-lucide="chevrons-left"></i></button>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="sidebar-footer">
+                <button id="btn-import" title="טען מפה מקובץ JSON"><i data-lucide="upload-cloud"></i>ייבוא</button>
+                <button id="btn-export" title="שמור מפה לקובץ JSON"><i data-lucide="download-cloud"></i>ייצוא</button>
+                <button id="btn-save-image" class="btn-primary" title="שמור את המפה כתמונת PNG">
+                    <i data-lucide="image"></i>
+                    שמור כתמונה
+                </button>
+                <button id="btn-reset" class="btn-danger" title="אפס את כל המפה והתחל מחדש">
+                    <i data-lucide="rotate-ccw"></i>
+                    אפס הכל
+                </button>
+            </div>
+            <input type="file" id="import-file-input" style="display: none;" accept=".json">
+        </aside>
+
+        <main id="main-content" tabindex="0">
+            <div id="layout-container">
+                <div id="col-headers"></div>
+                <div id="row-headers"></div>
+                <div id="grid-and-canvas-container">
+                    <div class="grid-container" id="beit-midrash-map"></div>
+                    <div id="selection-box"></div>
+                    <canvas id="object-canvas" class="canvas-container"></canvas>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="status-bar"></div>
+    <script src="script.js"></script>
+</body>
+</html>

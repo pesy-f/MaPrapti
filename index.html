@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>עורך מפת ישיבה | גרסה משופרת</title>
+    <title>MaPraqti | עורך מפת ישיבה</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg width='48' height='48' viewBox='0 0 48 48' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='4' y='4' width='16' height='16' rx='4' fill='%23F8FAFC' stroke='%23BFC5D2' stroke-width='2.5'/%3E%3Crect x='24' y='4' width='16' height='16' rx='4' fill='%23F8FAFC' stroke='%23BFC5D2' stroke-width='2.5'/%3E%3Crect x='4' y='24' width='16' height='16' rx='4' fill='%23F8FAFC' stroke='%23BFC5D2' stroke-width='2.5'/%3E%3Crect x='24' y='24' width='16' height='16' rx='4' fill='%23F8FAFC' stroke='%234f46e5' stroke-width='2.5'/%3E%3C/svg%3E">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Hebrew:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     
@@ -20,95 +20,199 @@
     <div class="app-container">
         <aside id="sidebar">
             <div class="sidebar-header">
-                <i data-lucide="layout-grid"></i>
-                <h3>עורך מפת ישיבה</h3>
+                <a href="https://pesy-f.github.io/MaPraqti/" target="_blank">
+                    <div class="header-logo">
+                        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <rect x="4" y="4" width="16" height="16" rx="4" fill="#F8FAFC" stroke="#BFC5D2" stroke-width="2.5"/>
+                          <rect x="24" y="4" width="16" height="16" rx="4" fill="#F8FAFC" stroke="#BFC5D2" stroke-width="2.5"/>
+                          <rect x="4" y="24" width="16" height="16" rx="4" fill="#F8FAFC" stroke="#BFC5D2" stroke-width="2.5"/>
+                          <rect x="24" y="24" width="16" height="16" rx="4" fill="#F8FAFC" stroke="#4f46e5" stroke-width="2.5"/>
+                        </svg>
+                    </div>
+                    <div class="header-text">
+                        <h3>MaPraqti</h3>
+                        <p>יצירת מפת מקומות לכל בית כנסת</p>
+                    </div>
+                </a>
             </div>
 
-            <div class="tool-group">
-                <label class="group-label">עיצוב וסידור</label>
-                <div class="input-row">
-                    <!-- כפתור צבע רקע -->
-                    <div class="split-color-btn">
-                        <button id="btn-apply-bg-color" class="main-action" title="החל צבע רקע">
-                            <i data-lucide="paint-bucket"></i>
-                            <span id="bg-color-indicator" class="color-indicator"></span>
-                        </button>
-                        <div id="bg-color-trigger" class="picker-trigger" title="בחר צבע רקע"><i data-lucide="chevron-down"></i></div>
-                        <input type="color" id="bg-color-picker" value="#dadaff">
+            <div class="tool-group open" data-group-id="design">
+                <div class="tool-group-header"><h3 class="group-label">עיצוב וסידור</h3><i data-lucide="chevron-down" class="chevron"></i></div>
+                <div class="tool-group-content">
+                    <div class="input-row">
+                        <button id="btn-mode-hide" class="icon-btn" title="הסתר/הצג מושב"><i data-lucide="eye"></i></button>
+                        <button id="btn-merge-unmerge" class="icon-btn" title="מזג / פצל"><i data-lucide="combine"></i></button>
+                        <button id="btn-toggle-numbering" class="icon-btn" title="הצג/הסתר מספור"><i data-lucide="hash"></i></button>
+                        <div class="split-color-btn">
+                            <button id="btn-apply-bg-color" class="main-action" title="החל צבע רקע"><i data-lucide="paint-bucket"></i><div id="bg-color-indicator" class="color-indicator"></div></button>
+                            <div id="bg-color-trigger" class="picker-trigger" title="בחר צבע רקע"><i data-lucide="chevron-down"></i></div>
+                            <input type="color" id="bg-color-picker" value="#ffffff">
+                        </div>
                     </div>
-                     <!-- כפתור צבע גופן -->
-                    <div class="split-color-btn">
-                        <button id="btn-apply-font-color" class="main-action" title="החל צבע גופן">
-                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="20px" font-family="Noto Sans Hebrew" font-weight="600">א</text></svg>
-                            <span id="font-color-indicator" class="color-indicator"></span>
-                        </button>
-                        <div id="font-color-trigger" class="picker-trigger" title="בחר צבע גופן"><i data-lucide="chevron-down"></i></div>
-                        <input type="color" id="font-color-picker" value="#1e293b">
+                    <div id="numbering-options-bar-wrapper">
+                      <div id="numbering-options-bar">
+                          <button id="btn-numbering-gematria" class="icon-btn" title="מספור בגימטריה"><b>א-ב</b></button>
+                          <button id="btn-numbering-continuous" class="icon-btn btn-text" title="מיספור רציף על כל המפה">רציף</button>
+                          <button id="btn-numbering-block" class="icon-btn btn-text" title="החל מיספור מחדש בכל קבוצת מושבים (אי)">אי</button>
+                          <button id="btn-numbering-series" class="icon-btn btn-text" title="החל סדרות מספרים לכל קבוצת מושבים (אי)">סדרות אי</button>
+                      </div>
                     </div>
-                    <input type="number" id="input-font-size" class="font-size-input" min="8" placeholder="14" title="גודל גופן">
-                </div>
-                <div class="input-row">
-                    <button id="btn-merge-unmerge" class="icon-btn" title="מזג / פצל"><i data-lucide="combine"></i></button>
-                    <button id="btn-mode-hide" class="icon-btn" title="הסתר/הצג מושב"><i data-lucide="eye"></i></button>
-                    <button id="btn-toggle-writing-mode" class="icon-btn" title="שנה כיוון טקסט"><i data-lucide="arrow-down-up"></i></button>
-                    <div class="size-inputs">
-                        <label for="input-width" title="רוחב">ר:</label>
-                        <input type="number" id="input-width" placeholder="--" min="10" title="רוחב (px)">
-                        <label for="input-height" title="גובה">ג:</label>
-                        <input type="number" id="input-height" placeholder="--" min="10" title="גובה (px)">
+                    <div class="input-row">
+                         <div class="split-color-btn compact-split-btn">
+                            <button id="btn-apply-font-color" class="main-action" title="החל צבע גופן"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="20px" font-family="Noto Sans Hebrew" font-weight="600">א</text></svg><div id="font-color-indicator" class="color-indicator"></div></button>
+                            <div id="font-color-trigger" class="picker-trigger" title="בחר צבע גופן"><i data-lucide="chevron-down"></i></div>
+                            <input type="color" id="font-color-picker" value="#1e293b">
+                        </div>
+                        <div class="input-with-label number-input-wrapper" style="flex-grow: 2;">
+                            <input type="number" id="input-font-size" min="8" placeholder=" " step="1"><label for="input-font-size">גודל גופן</label>
+                             <button class="number-input-control" data-for="input-font-size" data-action="decrease">-</button>
+                            <button class="number-input-control" data-for="input-font-size" data-action="increase">+</button>
+                        </div>
+                        <button id="btn-seat-font-weight" class="icon-btn compact-icon-btn" title="הדגש טקסט"><b>B</b></button>
+                        <button id="btn-toggle-writing-mode" class="icon-btn compact-icon-btn" title="שנה כיוון טקסט"><i data-lucide="arrow-down-up"></i></button>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-with-label number-input-wrapper">
+                            <input type="number" id="input-width" min="10" placeholder=" " step="1"><label for="input-width">רוחב טור</label>
+                            <button class="number-input-control" data-for="input-width" data-action="decrease">-</button>
+                            <button class="number-input-control" data-for="input-width" data-action="increase">+</button>
+                        </div>
+                        <div class="input-with-label number-input-wrapper">
+                            <input type="number" id="input-height" min="10" placeholder=" " step="1"><label for="input-height">גובה שורה</label>
+                            <button class="number-input-control" data-for="input-height" data-action="decrease">-</button>
+                            <button class="number-input-control" data-for="input-height" data-action="increase">+</button>
+                        </div>
                     </div>
                 </div>
             </div>
             
-            <div class="tool-group">
-                 <label class="group-label">הוספת אובייקטים</label>
-                 <div class="input-row">
-                     <button id="btn-toggle-object-mode" class="icon-btn" title="מצב עריכת אובייקטים"><i data-lucide="mouse-pointer-2"></i></button>
-                     <button id="btn-add-textbox" class="icon-btn" title="הוסף תיבת טקסט"><i data-lucide="type"></i></button>
-                     <button id="btn-add-line" class="icon-btn" title="הוסף קו"><i data-lucide="minus"></i></button>
-                     <button id="btn-add-image" class="icon-btn" title="הוסף תמונה"><i data-lucide="image-plus"></i></button>
-                     <input type="file" id="image-upload-input" style="display: none;" accept="image/*">
+            <div class="tool-group" data-group-id="objects">
+                 <div class="tool-group-header"><h3 class="group-label">אובייקטים</h3><i data-lucide="chevron-down" class="chevron"></i></div>
+                 <div class="tool-group-content">
+                     <div class="input-row">
+                         <button id="btn-add-textbox" class="icon-btn" title="הוסף תיבת טקסט"><i data-lucide="type"></i></button>
+                         <button id="btn-add-line" class="icon-btn" title="הוסף קו"><i data-lucide="minus"></i></button>
+                         <button id="btn-add-rectangle" class="icon-btn" title="הוסף מלבן"><i data-lucide="rectangle-horizontal"></i></button>
+                         <button id="btn-add-ellipse" class="icon-btn" title="הוסף אליפסה"><i data-lucide="circle"></i></button>
+                         <button id="btn-add-image" class="icon-btn" title="הוסף תמונה"><i data-lucide="image-plus"></i></button>
+                     </div>
                  </div>
             </div>
 
-            <div class="tool-group">
-                <label class="group-label">עריכת רשת</label>
-                 <div class="input-row compact-input-row">
-                     <label for="add-rows-cols-count" class="sub-group-label" title="כמות להוספה">כמות:</label>
-                     <input type="number" id="add-rows-cols-count" value="1" min="1" title="כמות להוספה">
-                     <button id="btn-delete" class="icon-btn icon-btn-danger" title="מחק שורות/טורים מלאים שנבחרו"><i data-lucide="trash-2"></i></button>
-                 </div>
-                <div class="grid-edit-actions">
-                    <label class="sub-group-label">הוסף שורה:</label>
-                    <div class="input-row input-row-wrapping">
-                        <button id="btn-add-row-before" class="icon-btn" title="הוסף מעל הבחירה"><i data-lucide="arrow-up-to-line"></i></button>
-                        <button id="btn-add-row-after" class="icon-btn" title="הוסף מתחת לבחירה"><i data-lucide="arrow-down-to-line"></i></button>
-                        <button id="btn-add-row-start" class="icon-btn" title="הוסף להתחלה"><i data-lucide="chevrons-up"></i></button>
-                        <button id="btn-add-row-end" class="icon-btn" title="הוסף לסוף"><i data-lucide="chevrons-down"></i></button>
+            <div id="object-edit-tools" data-group-id="object-edit">
+                <div class="input-row" id="object-size-controls">
+                    <div class="input-with-label number-input-wrapper">
+                        <input type="number" id="object-width" min="1" placeholder=" " step="1"><label>רוחב</label>
+                        <button class="number-input-control" data-for="object-width" data-action="decrease">-</button>
+                        <button class="number-input-control" data-for="object-width" data-action="increase">+</button>
                     </div>
-                     <label class="sub-group-label">הוסף טור:</label>
-                    <div class="input-row input-row-wrapping">
-                        <button id="btn-add-col-before" class="icon-btn" title="הוסף מימין לבחירה"><i data-lucide="arrow-right-to-line"></i></button>
-                        <button id="btn-add-col-after" class="icon-btn" title="הוסף משמאל לבחירה"><i data-lucide="arrow-left-to-line"></i></button>
-                        <button id="btn-add-col-start" class="icon-btn" title="הוסף להתחלה"><i data-lucide="chevrons-right"></i></button>
-                        <button id="btn-add-col-end" class="icon-btn" title="הוסף לסוף"><i data-lucide="chevrons-left"></i></button>
+                     <div class="input-with-label number-input-wrapper">
+                        <input type="number" id="object-height" min="1" placeholder=" " step="1"><label>גובה</label>
+                        <button class="number-input-control" data-for="object-height" data-action="decrease">-</button>
+                        <button class="number-input-control" data-for="object-height" data-action="increase">+</button>
                     </div>
+                    <div class="input-with-label number-input-wrapper">
+                        <input type="number" id="object-rotation" min="-360" max="360" step="1" placeholder=" "><label>סיבוב (°)</label>
+                        <button class="number-input-control" data-for="object-rotation" data-action="decrease">-</button>
+                        <button class="number-input-control" data-for="object-rotation" data-action="increase">+</button>
+                    </div>
+                </div>
+                <div class="input-row" id="object-fill-controls">
+                    <div class="split-color-btn">
+                        <button class="main-action" title="החל צבע מילוי"><i data-lucide="paint-bucket"></i><div id="object-fill-indicator" class="color-indicator"></div></button>
+                        <div id="object-fill-trigger" class="picker-trigger"><i data-lucide="chevron-down"></i></div>
+                        <input type="color" id="object-fill-picker" value="#FFFFFF">
+                    </div>
+                    <div class="input-with-label number-input-wrapper">
+                        <input type="number" id="object-fill-opacity" min="0" max="1" step="0.1" value="1" placeholder=" "><label>אטימות מילוי</label>
+                        <button class="number-input-control" data-for="object-fill-opacity" data-action="decrease">-</button>
+                        <button class="number-input-control" data-for="object-fill-opacity" data-action="increase">+</button>
+                    </div>
+                </div>
+                 <div class="input-row" id="object-stroke-controls">
+                    <div class="split-color-btn">
+                        <button class="main-action" title="החל צבע קו"><i data-lucide="pen-tool"></i><div id="object-stroke-indicator" class="color-indicator"></div></button>
+                        <div id="object-stroke-trigger" class="picker-trigger"><i data-lucide="chevron-down"></i></div>
+                        <input type="color" id="object-stroke-picker" value="#000000">
+                    </div>
+                    <div class="input-with-label number-input-wrapper">
+                        <input type="number" id="object-stroke-opacity" min="0" max="1" step="0.1" value="1" placeholder=" "><label>אטימות קו</label>
+                         <button class="number-input-control" data-for="object-stroke-opacity" data-action="decrease">-</button>
+                        <button class="number-input-control" data-for="object-stroke-opacity" data-action="increase">+</button>
+                    </div>
+                </div>
+                <div class="input-row" id="object-style-controls">
+                    <div id="object-stroke-style-wrapper" class="input-with-label" style="flex-basis: 45%;">
+                        <select id="object-stroke-style"><option value="solid">קו רציף</option><option value="dashed">קו מקווקו</option><option value="dotted">קו מנוקד</option></select><label>סגנון קו</label>
+                    </div>
+                    <div class="input-with-label number-input-wrapper" style="flex-basis: 20%;">
+                        <input type="number" id="object-stroke-width" min="0" max="50" placeholder=" " step="1"><label>עובי</label>
+                         <button class="number-input-control" data-for="object-stroke-width" data-action="decrease">-</button>
+                        <button class="number-input-control" data-for="object-stroke-width" data-action="increase">+</button>
+                    </div>
+                    <div id="object-border-radius-wrapper" class="input-with-label number-input-wrapper" style="flex-basis: 35%;">
+                        <input type="number" id="object-border-radius" min="0" placeholder=" " step="1"><label>עיגול פינות</label>
+                         <button class="number-input-control" data-for="object-border-radius" data-action="decrease">-</button>
+                        <button class="number-input-control" data-for="object-border-radius" data-action="increase">+</button>
+                    </div>
+                </div>
+                <div class="input-row" id="object-text-controls">
+                     <div class="split-color-btn">
+                         <button class="main-action" title="החל צבע גופן"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="20px">א</text></svg><div id="object-font-color-indicator" class="color-indicator"></div></button>
+                        <div id="object-font-color-trigger" class="picker-trigger"><i data-lucide="chevron-down"></i></div>
+                        <input type="color" id="object-font-color-picker" value="#1e293b">
+                    </div>
+                    <div id="object-font-size-wrapper" class="input-with-label number-input-wrapper">
+                        <input type="number" id="object-font-size" min="8" placeholder=" " step="1"><label>גודל גופן</label>
+                         <button class="number-input-control" data-for="object-font-size" data-action="decrease">-</button>
+                        <button class="number-input-control" data-for="object-font-size" data-action="increase">+</button>
+                    </div>
+                    <button id="object-font-weight-btn" class="icon-btn" title="הדגש טקסט"><b>B</b></button>
+                </div>
+                 <div class="input-row"><button id="btn-delete-object" class="icon-btn icon-btn-danger" title="מחק אובייקט נבחר" style="width: 100%;"><i data-lucide="trash-2"></i></button></div>
+            </div>
+
+            <div class="tool-group" data-group-id="grid-edit">
+                <div class="tool-group-header"><h3 class="group-label">עריכת רשת</h3><i data-lucide="chevron-down" class="chevron"></i></div>
+                <div class="tool-group-content">
+                    <div class="input-row">
+                        <div class="input-with-label number-input-wrapper" style="width: 100%;">
+                            <input type="number" id="add-rows-cols-count" value="1" min="1" placeholder=" " title="מספר שורות / טורים להוספה" step="1">
+                            <label for="add-rows-cols-count">מספר שורות / טורים להוספה</label>
+                            <button class="number-input-control" data-for="add-rows-cols-count" data-action="decrease">-</button>
+                            <button class="number-input-control" data-for="add-rows-cols-count" data-action="increase">+</button>
+                        </div>
+                    </div>
+                    <p id="grid-edit-dynamic-label" class="sub-group-label"></p>
+                    <div class="grid-edit-actions">
+                        <div class="input-row">
+                            <button id="btn-add-row-before" class="icon-btn" title="הוסף שורות מעל הבחירה"><i data-lucide="arrow-up-to-line"></i></button>
+                            <button id="btn-add-row-after" class="icon-btn" title="הוסף שורות מתחת לבחירה"><i data-lucide="arrow-down-to-line"></i></button>
+                            <button id="btn-add-row-start" class="icon-btn" title="הוסף שורות להתחלה"><i data-lucide="chevrons-up"></i></button>
+                            <button id="btn-add-row-end" class="icon-btn" title="הוסף שורות לסוף"><i data-lucide="chevrons-down"></i></button>
+                        </div>
+                        <div class="input-row">
+                            <button id="btn-add-col-before" class="icon-btn" title="הוסף טורים מימין לבחירה"><i data-lucide="arrow-right-to-line"></i></button>
+                            <button id="btn-add-col-after" class="icon-btn" title="הוסף טורים משמאל לבחירה"><i data-lucide="arrow-left-to-line"></i></button>
+                            <button id="btn-add-col-start" class="icon-btn" title="הוסף טורים להתחלה"><i data-lucide="chevrons-right"></i></button>
+                            <button id="btn-add-col-end" class="icon-btn" title="הוסף טורים לסוף"><i data-lucide="chevrons-left"></i></button>
+                        </div>
+                    </div>
+                     <div class="input-row compact-input-row" style="margin-top: var(--spacing-md);">
+                         <button id="btn-delete" class="icon-btn icon-btn-danger" title="מחק שורות/טורים מלאים שנבחרו" style="flex-grow:1;gap:var(--spacing-sm);"><i data-lucide="trash-2"></i>מחק שורות / טורים נבחרים</button>
+                     </div>
                 </div>
             </div>
     
             <div class="sidebar-footer">
                 <button id="btn-import" title="טען מפה מקובץ JSON"><i data-lucide="upload-cloud"></i>ייבוא</button>
                 <button id="btn-export" title="שמור מפה לקובץ JSON"><i data-lucide="download-cloud"></i>ייצוא</button>
-                <button id="btn-save-image" class="btn-primary" title="שמור את המפה כתמונת PNG">
-                    <i data-lucide="image"></i>
-                    שמור כתמונה
-                </button>
-                <button id="btn-reset" class="btn-danger" title="אפס את כל המפה והתחל מחדש">
-                    <i data-lucide="rotate-ccw"></i>
-                    אפס הכל
-                </button>
+                <button id="btn-save-image" class="btn-primary" title="שמור את המפה כתמונת PNG"><i data-lucide="image"></i>שמור כתמונה</button>
+                <button id="btn-reset" class="btn-danger" title="אפס את כל המפה והתחל מחדש"><i data-lucide="rotate-ccw"></i>אפס הכל</button>
+                <button id="btn-about" title="אודות התוכנה"><i data-lucide="help-circle"></i>אודות</button>
             </div>
             <input type="file" id="import-file-input" style="display: none;" accept=".json">
+            <input type="file" id="image-upload-input" style="display:none" accept="image/*">
         </aside>
 
         <main id="main-content" tabindex="0">
@@ -117,11 +221,94 @@
                 <div id="row-headers"></div>
                 <div id="grid-and-canvas-container">
                     <div class="grid-container" id="beit-midrash-map"></div>
+                    <div id="object-container"></div>
                     <div id="selection-box"></div>
-                    <canvas id="object-canvas" class="canvas-container"></canvas>
                 </div>
             </div>
+             <div class="zoom-controls">
+                <button id="zoom-out-btn" class="icon-btn" title="הקטן תצוגה"><i data-lucide="zoom-out"></i></button>
+                <input type="range" id="zoom-slider" min="25" max="200" value="100" step="5">
+                <span id="zoom-display">100%</span>
+                <button id="zoom-in-btn" class="icon-btn" title="הגדל תצוגה"><i data-lucide="zoom-in"></i></button>
+            </div>
         </main>
+    </div>
+
+    <div id="about-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close-btn" title="סגור">&times;</button>
+            <div class="modal-header">
+                <h2>MaPraqti | מדריך למשתמש</h2>
+            </div>
+            <div class="modal-body">
+                <h3>ברוכים הבאים ל-MaPraqti!</h3>
+                <p>הכלי המתקדם והנוח ביותר ליצירת מפות מקומות ישיבה לבתי כנסת, ישיבות וכל אירוע אחר. המדריך הבא יסייע לכם להכיר את כל יכולות התוכנה.</p>
+                
+                <h4><i data-lucide="layout-grid"></i>עבודה עם הרשת (Grid)</h4>
+                <ul>
+                    <li><strong>שינוי גודל:</strong> ניתן לשנות רוחב של טור או גובה של שורה על ידי בחירת המושבים הרצויים ושינוי הערכים בתפריט "עיצוב וסידור".</li>
+                    <li><strong>בחירת מושבים:</strong>
+                        <ul>
+                            <li><strong>בחירה בודדת:</strong> לחיצה על מושב.</li>
+                            <li><strong>בחירה מרובה:</strong> החזקת <code>Ctrl</code> (או <code>Cmd</code>) ולחיצה על מושבים, שורות או טורים נוספים.</li>
+                            <li><strong>בחירת טווח:</strong> בחירת מושב, החזקת <code>Shift</code> ובחירת מושב נוסף כדי לבחור את כל המושבים שביניהם.</li>
+                            <li><strong>בחירת שורה/טור:</strong> לחיצה על כותרת השורה או הטור.</li>
+                            <li><strong>בחירה בגרירה:</strong> לחיצה על הרקע וגרירת העכבר ליצירת תיבת בחירה. תיבה זו תבחר גם מושבים מוסתרים.</li>
+                        </ul>
+                    </li>
+                     <li><strong>הוספה/מחיקה של שורות וטורים:</strong> בתפריט "עריכת רשת" ניתן להוסיף או למחוק שורות וטורים שלמים בקלות.</li>
+                </ul>
+
+                <h4><i data-lucide="palette"></i>עיצוב מושבים</h4>
+                <ul>
+                    <li><strong>עריכת טקסט:</strong> לחיצה כפולה על מושב או בחירת מושב והתחלת הקלדה.</li>
+                    <li><strong>ניקוי טקסט:</strong> בחירת מושב/ים ולחיצה על <code>Delete</code> או <code>Backspace</code>.</li>
+                    <li><strong>עיצוב:</strong> ניתן לשנות צבע רקע, צבע גופן, גודל, משקל (מודגש) וכיוון טקסט (אופקי/אנכי) מהתפריט הראשי.</li>
+                    <li><strong>הסתרה/הצגה:</strong> הפעלת "מצב הסתר/הצג" (כפתור העין) ולחיצה על מושבים כדי להפוך אותם לשקופים.</li>
+                    <li><strong>מיזוג/פיצול:</strong> בחירת מספר מושבים ולחיצה על כפתור המיזוג. לחיצה על מושב ממוזג תפצל אותו חזרה.</li>
+                    <li><strong>העתקת סגנון (<code>Ctrl+C / Ctrl+V</code>):</strong> <i>(בפיתוח)</i> בחירת מושב לדוגמה, לחיצה על <code>Ctrl+C</code>, בחירת מושבי היעד ולחיצה על <code>Ctrl+V</code> להדבקת הסגנון.</li>
+                </ul>
+                
+                <h4><i data-lucide="hash"></i>מספור אוטומטי</h4>
+                 <ul>
+                    <li><strong>הפעלה:</strong> לחיצה על כפתור הסולמית (#).</li>
+                    <li><strong>אפשרויות:</strong> ניתן לבחור בין מספרים רגילים לגימטריה, ולקבוע את אסטרטגיית המספור:
+                        <ul>
+                            <li><strong>רציף:</strong> מספור רציף על פני כל המפה.</li>
+                            <li><strong>אי:</strong> מספור מחדש לכל "אי" (קבוצת מושבים) נפרד.</li>
+                            <li><strong>סדרות אי:</strong> התחלת סדרה חדשה (למשל 100, 200) לכל "אי".</li>
+                        </ul>
+                    </li>
+                    <li><strong>חוקים:</strong> מושבים מוסתרים או צבועים בצבע שאינו לבן לא יקבלו מיספור, כדי לאפשר יצירת אלמנטים כמו "במה" או "עמודים".</li>
+                </ul>
+
+                <h4><i data-lucide="box"></i>אובייקטים</h4>
+                <ul>
+                    <li><strong>הוספה:</strong> ניתן להוסיף תיבות טקסט, קווים, מלבנים, אליפסות ותמונות מהמחשב.</li>
+                    <li><strong>עריכה:</strong> בחירת אובייקט תציג את תפריט "עריכת אובייקט", המאפשר שליטה מלאה על גודל, סיבוב, צבע מילוי, שקיפות, קו מתאר, עיגול פינות ועיצוב הגופן.</li>
+                    <li><strong>מניפולציה ישירה:</strong>
+                        <ul>
+                           <li><strong>הזזה:</strong> גרירת האובייקט עם העכבר.</li>
+                           <li><strong>שינוי גודל:</strong> גרירת נקודות האחיזה בריבועים שבפינות ובצדדים.</li>
+                           <li><strong>סיבוב:</strong> גרירת נקודת האחיזה העגולה שמופיעה מעל האובייקט הנבחר.</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h4><i data-lucide="download-cloud"></i>ניהול ושמירה</h4>
+                 <ul>
+                    <li><strong>ייבוא וייצוא:</strong> שמירה וטעינה של המפה כקובץ <code>JSON</code>.</li>
+                    <li><strong>שמירה כתמונה:</strong> יצירת קובץ <code>PNG</code> איכותי של המפה.</li>
+                    <li><strong>איפוס:</strong> מחיקת המפה הנוכחית והתחלה מחדש.</li>
+                    <li><strong>קיצורי דרך:</strong> בטל (Undo) ובצע שוב (Redo) באמצעות <code>Ctrl+Z</code> ו-<code>Ctrl+Y</code> <i>(בפיתוח)</i>.</li>
+                    <li><strong>שימוש ללא אינטרנט:</strong> התוכנה שומרת את כל המידע בדפדפן המקומי שלך. כדי לעבוד ללא חיבור לאינטרנט, ניתן להוריד גרסה מלאה של התוכנה דרך הכפתור למטה.</li>
+                 </ul>
+
+                <div class="modal-footer">
+                    <button id="btn-download-offline" class="btn-primary"><i data-lucide="download"></i>להורדת התוכנה לשרידים אשר ה' קורא</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div id="status-bar"></div>
